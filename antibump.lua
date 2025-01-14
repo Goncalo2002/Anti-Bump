@@ -11,7 +11,7 @@ function GetVehicleSpeed(vehicle)
     return GetEntitySpeed(vehicle)
 end
 
-function SendCompressionMessage()
+--[[function SendCompressionMessage()
     local currentTime = GetGameTimer()
     if currentTime - lastMessageTime >= messageCooldown then
         messagecount = messagecount + 1
@@ -20,7 +20,7 @@ function SendCompressionMessage()
         })
         lastMessageTime = currentTime
     end
-end
+end]]
 
 Citizen.CreateThread(function()
     while true do
@@ -57,7 +57,7 @@ Citizen.CreateThread(function()
             end
 
             if isBumpDetected then
-                SendCompressionMessage()
+                -- SendCompressionMessage()
 
                 if currentSpeed > prevSpeed then
                     SetVehicleMaxSpeed(vehicle, prevSpeed)
