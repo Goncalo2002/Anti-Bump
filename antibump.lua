@@ -3,9 +3,9 @@ local vehicle = nil
 local isCompressing = false
 local bumpThreshold = 0
 local normalCompression = {}
-local messageCooldown = 100
-local lastMessageTime = 0
-local messagecount = 0
+--local messageCooldown = 100
+--local lastMessageTime = 0
+--local messagecount = 0
 
 function GetVehicleSpeed(vehicle)
     return GetEntitySpeed(vehicle)
