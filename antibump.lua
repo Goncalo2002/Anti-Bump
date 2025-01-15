@@ -1,5 +1,6 @@
 local prevSpeed = 0
 local vehicle = nil
+local lastVehicle = nil 
 local isCompressing = false
 local bumpThreshold = 0
 local normalCompression = {}
@@ -27,37 +28,33 @@ Citizen.CreateThread(function()
         Citizen.Wait(50)
         vehicle = GetVehiclePedIsIn(GetPlayerPed(-1), false)
 
-        if vehicle and vehicle ~= 0 then
-            local vehicleClass = GetVehicleClass(vehicle)
-            local wheelType = GetVehicleWheelType(vehicle)
-
-            if wheelType == 4 then -- OffRoad Vehicles
-                bumpThreshold = 0.1
-            else
-                bumpThreshold = 0.05
+        if vehicle and vehicle ~= 0 and GetPedInVehicleSeat(vehicle, -1) == GetPlayerPed(-1) then
+            if vehicle ~= lastVehicle then
+                normalCompression = {}
+                for i = 0, GetVehicleNumberOfWheels(vehicle) - 1 do
+                    normalCompression[i] = GetVehicleWheelSuspensionCompression(vehicle, i)
+                end
+                lastVehicle = vehicle
+                prevSpeed = 0
             end
+
+            local wheelType = GetVehicleWheelType(vehicle)
+            bumpThreshold = (wheelType == 4) and 0.1 or 0.055 -- OffRoad Vehicles vs Others
 
             local currentSpeed = GetVehicleSpeed(vehicle)
             local isBumpDetected = false
 
-            if not normalCompression[vehicle] then
-                normalCompression[vehicle] = {}
-                for i = 0, GetVehicleNumberOfWheels(vehicle) - 1 do
-                    normalCompression[vehicle][i] = GetVehicleWheelSuspensionCompression(vehicle, i)
-                end
-            end
-
             for i = 0, GetVehicleNumberOfWheels(vehicle) - 1 do
                 local suspensionCompression = GetVehicleWheelSuspensionCompression(vehicle, i)
-                local normal = normalCompression[vehicle][i]
-                
+                local normal = normalCompression[i]
+
                 if math.abs(suspensionCompression - normal) > bumpThreshold then
                     isBumpDetected = true
                 end
             end
 
             if isBumpDetected then
-                -- SendCompressionMessage()
+                --SendCompressionMessage()
 
                 if currentSpeed > prevSpeed then
                     SetVehicleMaxSpeed(vehicle, prevSpeed)
@@ -71,6 +68,10 @@ Citizen.CreateThread(function()
             if not isCompressing then
                 prevSpeed = currentSpeed
             end
+        else
+            vehicle = nil
+            lastVehicle = nil
+            normalCompression = {}
         end
     end
 end)
