@@ -10,5 +10,5 @@ shared_scripts {
 }
 
 client_scripts {
-    'client/antibump.lua'
+    'antibump.lua'
 }
