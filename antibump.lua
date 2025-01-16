@@ -38,8 +38,9 @@ Citizen.CreateThread(function()
                 prevSpeed = 0
             end
 
-            local wheelType = GetVehicleWheelType(vehicle)
-            bumpThreshold = (wheelType == 4) and 0.1 or 0.055 -- OffRoad Vehicles vs Others
+            -- Determine bump threshold using the Config table
+            local vehicleClass = GetVehicleClass(vehicle)
+            bumpThreshold = Config.BumpThresholds[vehicleClass] or Config.BumpThresholds.Default
 
             local currentSpeed = GetVehicleSpeed(vehicle)
             local isBumpDetected = false
