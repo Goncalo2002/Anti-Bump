@@ -3,8 +3,12 @@ game 'gta5'
 
 author 'Goncal0_'
 description 'Remove BreakBoosting and Bumps speed bugs from FiveM.'
-version '1.0'
+version '1.1'
+
+shared_scripts {
+	'config.lua'
+}
 
 client_scripts {
-    'antibump.lua'
+    'client/antibump.lua'
 }
